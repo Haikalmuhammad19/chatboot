@@ -34,6 +34,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',  # For static files
     'django.contrib.sessions.middleware.SessionMiddleware',
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -155,11 +156,17 @@ SIMPLE_JWT = {
 
 ML_MODELS_PATH = BASE_DIR
 
-# Security settings for production
+# Trust proxy headers from Railway
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+SECURE_PROXY_HEADER = ('HTTP_CF_VISITOR', '{"scheme":"https"}')
+
+# Security settings for production (relaxed for Railway compatibility)
 if not DEBUG:
-    SECURE_SSL_REDIRECT = True
+    # SSL redirect causes issues with Railway proxy, disabled for now
+    # SECURE_SSL_REDIRECT = True  
     SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_SECURE = True
-    SECURE_HSTS_SECONDS = 31536000
-    SECURE_HSTS_INCLUDE_SUBDOMAINS = True
-    SECURE_HSTS_PRELOAD = True
+    # HSTS disabled to prevent issues during development
+    # SECURE_HSTS_SECONDS = 31536000
+    # SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+    # SECURE_HSTS_PRELOAD = True
