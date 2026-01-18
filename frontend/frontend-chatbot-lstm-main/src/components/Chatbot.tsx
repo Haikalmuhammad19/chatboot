@@ -63,16 +63,17 @@ export default function Chatbot() {
 
       setMessages((prev) => [...prev, botMessage]);
     } catch (err) {
-      setError('Maaf, terjadi kesalahan dalam menghubungi server. Pastikan API server berjalan di http://localhost:8000');
+      const errorMessage = err instanceof Error ? err.message : 'Unknown error';
+      setError(`Kesalahan API: ${errorMessage}. Pastikan backend berjalan di http://localhost:8000`);
 
-      const errorMessage: Message = {
+      const botErrorMessage: Message = {
         id: (Date.now() + 1).toString(),
         type: 'bot',
-        content: 'Maaf, saya mengalami kesulitan teknis saat ini. Mohon coba lagi dalam beberapa saat. Jika masalah berlanjut, harap pastikan server API berjalan dengan baik.',
+        content: `Maaf, saya mengalami kesulitan teknis. Error: ${errorMessage}. Mohon coba lagi nanti atau pastikan server backend berjalan dengan baik.`,
         timestamp: new Date(),
       };
 
-      setMessages((prev) => [...prev, errorMessage]);
+      setMessages((prev) => [...prev, botErrorMessage]);
     } finally {
       setIsLoading(false);
     }
