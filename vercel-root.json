@@ -1,0 +1,13 @@
+{
+  "projects": {
+    "default": {
+      "alias": [
+        "chatboot"
+      ]
+    }
+  },
+  "buildCommand": "cd frontend/frontend-chatbot-lstm-main && npm run build",
+  "outputDirectory": "frontend/frontend-chatbot-lstm-main/dist",
+  "installCommand": "cd frontend/frontend-chatbot-lstm-main && npm ci",
+  "framework": "vite"
+}
