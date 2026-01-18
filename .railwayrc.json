@@ -1,5 +1,4 @@
 {
-  "version": 1,
   "buildCommand": "cd backend/backend-chatbot-lstm-main && pip install -r requirements.txt && python manage.py migrate && python manage.py collectstatic --noinput",
   "startCommand": "cd backend/backend-chatbot-lstm-main && gunicorn backend.wsgi:application --bind 0.0.0.0:$PORT"
 }
