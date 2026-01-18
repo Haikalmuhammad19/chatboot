@@ -7,7 +7,17 @@ SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-your-secret-key-here-chang
 
 DEBUG = os.getenv('DEBUG', 'False') == 'True'
 
-ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', 'localhost,127.0.0.1').split(',')
+# Allow Railway domain and Vercel frontend
+ALLOWED_HOSTS = [
+    'localhost',
+    '127.0.0.1',
+    'chatboot-production-e9a5.up.railway.app',
+    'chatboot-tawny.vercel.app',
+]
+# Add environment-based hosts
+env_hosts = os.getenv('ALLOWED_HOSTS', '')
+if env_hosts:
+    ALLOWED_HOSTS.extend(env_hosts.split(','))
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -98,6 +108,7 @@ CORS_ALLOWED_ORIGINS = [
     'http://localhost:5173',
     'http://127.0.0.1:3000',
     'http://127.0.0.1:5173',
+    'https://chatboot-tawny.vercel.app',
 ]
 
 # Add environment-based CORS origins
