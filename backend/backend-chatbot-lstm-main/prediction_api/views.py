@@ -1,6 +1,7 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status, generics
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from django.utils import timezone
 from .serializers import (
     PredictionRequestSerializer,
@@ -12,6 +13,8 @@ from .ml_service import MLModelService
 
 
 class PredictView(APIView):
+    permission_classes = [IsAuthenticated]
+    
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.ml_service = MLModelService()
@@ -33,7 +36,8 @@ class PredictView(APIView):
             PredictionHistory.objects.create(
                 text=text,
                 predicted_subreddit=predicted_subreddit,
-                confidence=confidence
+                confidence=confidence,
+                user=request.user
             )
 
             response_data = {
@@ -53,11 +57,16 @@ class PredictView(APIView):
 
 
 class PredictionHistoryListView(generics.ListAPIView):
-    queryset = PredictionHistory.objects.all()
+    permission_classes = [IsAuthenticated]
     serializer_class = PredictionHistorySerializer
+
+    def get_queryset(self):
+        return PredictionHistory.objects.filter(user=self.request.user)
 
 
 class HealthCheckView(APIView):
+    permission_classes = [AllowAny]
+    
     def get(self, request):
         return Response({
             "status": "healthy",
