@@ -1,0 +1,11 @@
+[build]
+pythonVersion = "3.11"
+
+[[build.installCommand]]
+cmd = "pip install --upgrade pip && pip install -r backend/backend-chatbot-lstm-main/requirements.txt"
+
+[[build.buildCommand]]
+cmd = "cd backend/backend-chatbot-lstm-main && python manage.py collectstatic --noinput && python manage.py migrate"
+
+[start]
+cmd = "cd backend/backend-chatbot-lstm-main && gunicorn backend.wsgi:application --bind 0.0.0.0:$PORT"
