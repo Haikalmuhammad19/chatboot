@@ -1,0 +1,9 @@
+[build]
+python = "3.11"
+
+[build.install]
+pkgManager = "pip"
+dependenciesFile = "requirements.txt"
+
+[start]
+cmd = "gunicorn backend.wsgi"
