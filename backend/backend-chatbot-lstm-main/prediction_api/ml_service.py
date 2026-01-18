@@ -2,9 +2,12 @@ import numpy as np
 import pickle
 import re
 import os
+import logging
 from keras.models import load_model
 from keras.preprocessing.sequence import pad_sequences
 from django.conf import settings
+
+logger = logging.getLogger(__name__)
 
 
 class MLModelService:
@@ -12,6 +15,7 @@ class MLModelService:
     _model = None
     _tokenizer = None
     _label_encoder = None
+    _loaded = False
 
     max_length = 50
     vocab_size = 10000
@@ -24,22 +28,41 @@ class MLModelService:
 
     def _load_models(self):
         models_path = settings.BASE_DIR
-
         model_path = os.path.join(models_path, "subreddit_lstm_model.keras")
         tokenizer_path = os.path.join(models_path, "tokenizer.pkl")
         encoder_path = os.path.join(models_path, "subreddit_label_encoder.pkl")
 
+        logger.info(f"Loading models from: {models_path}")
         print(f"Loading models from: {models_path}")
+        print(f"Model path: {model_path}, exists: {os.path.exists(model_path)}")
+        print(f"Tokenizer path: {tokenizer_path}, exists: {os.path.exists(tokenizer_path)}")
+        print(f"Encoder path: {encoder_path}, exists: {os.path.exists(encoder_path)}")
 
-        self._model = load_model(model_path)
+        try:
+            self._model = load_model(model_path)
+            logger.info(f"Model loaded successfully from {model_path}")
+            print(f"Model loaded successfully!")
 
-        with open(tokenizer_path, "rb") as f:
-            self._tokenizer = pickle.load(f)
+            with open(tokenizer_path, "rb") as f:
+                self._tokenizer = pickle.load(f)
+            logger.info(f"Tokenizer loaded successfully")
+            print(f"Tokenizer loaded successfully!")
 
-        with open(encoder_path, "rb") as f:
-            self._label_encoder = pickle.load(f)
+            with open(encoder_path, "rb") as f:
+                self._label_encoder = pickle.load(f)
+            logger.info(f"Label encoder loaded successfully")
+            print(f"Label encoder loaded successfully!")
+            
+            self._loaded = True
 
-        print("Models loaded successfully!")
+        except FileNotFoundError as e:
+            logger.error(f"Model files not found: {e}")
+            print(f"ERROR: Model files not found: {e}")
+            raise
+        except Exception as e:
+            logger.error(f"Failed to load models: {e}")
+            print(f"ERROR: Failed to load models: {e}")
+            raise
 
     @staticmethod
     def clean_text(text):
