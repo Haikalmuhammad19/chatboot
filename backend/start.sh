@@ -3,9 +3,11 @@ set -e
 
 echo "Starting Django application..."
 echo "Current directory: $(pwd)"
-echo "Listing backend directory..."
-ls -la
 
+# Django project is in nested folder in git
+cd backend-chatbot-lstm-main
+
+echo "New directory: $(pwd)"
 echo "Installing dependencies..."
 pip install -r requirements.txt
 
