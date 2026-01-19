@@ -2,5 +2,4 @@
 builder = "nixpacks"
 
 [deploy]
-workingDirectory = "backend"
-startCommand = "pip install -r requirements.txt && python manage.py migrate && python manage.py collectstatic --noinput --clear 2>/dev/null || true && gunicorn backend.wsgi:application --bind 0.0.0.0:$PORT"
+startCommand = "cd backend && pip install -r requirements.txt && python manage.py migrate && python manage.py collectstatic --noinput --clear 2>/dev/null || true && gunicorn backend.wsgi:application --bind 0.0.0.0:$PORT"
